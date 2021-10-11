@@ -159,7 +159,7 @@ function genTextCode(ast) {
     tokens.push(`_s(${name})`)
     index = defaultTagRE.lastIndex
   }
-  if (index < text.length -  1)
+  if (index < text.length)
     tokens.push(`"${text.slice(index)}"`)
     // result +=
   return `_v(${tokens.join('+')})`

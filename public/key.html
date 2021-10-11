@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script src="../dist/vue.js"></script>
+    <div id="app">
+        <ul>
+            <li>A</li>
+            <li>B</li>
+            <li>C</li>
+            <li>D</li>
+        </ul>
+
+    </div>
+
+    <script>
+        let vm = new Vue({
+            el:'#app',
+            // data:{
+            //     arr:['香蕉','苹果','橘子']
+            // },
+            // methods:{
+            //     add(){
+            //         this.arr.unshift('橙子')
+            //     }
+            // }
+        })
+
+        setTimeout(() => {
+            vm.template = `
+             <ul>
+                <li>A</li>
+                <li>B</li>
+                <li>C</li>
+                <li>D</li>
+                 <li>E</li>
+            </ul>
+            `
+          vm._update(vm._render())
+        }, 2000)
+    </script>
+</body>
+</html>

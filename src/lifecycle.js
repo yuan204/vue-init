@@ -3,6 +3,10 @@ import {patch} from "./vdom/patch";
 import Watcher from "./observe/watcher";
 
 
+export function callHooks(vm, hook) {
+    vm.$options[hook] && vm.$options[hook].forEach(item => item.call(vm))
+}
+
 export function lifecycleMixin(Vue) {
     Vue.prototype._render = function (){
         const vm = this
@@ -11,8 +15,13 @@ export function lifecycleMixin(Vue) {
     }
     Vue.prototype._update = function (vnode){
         const vm = this
-        const oldNode = vm.$el
-        vm.$el = patch(oldNode, vnode)
+        // const oldNode = vm.$el
+        if (vm._prevVNode) {
+            patch(vm._prevVNode, vnode)
+        } else {
+            vm.$el = patch(vm.$el, vnode)
+        }
+        vm._prevVNode = vnode
     }
     Vue.prototype._c = function (){
         return createElementVNode(this, ...arguments)
