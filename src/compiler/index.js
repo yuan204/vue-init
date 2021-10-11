@@ -147,18 +147,22 @@ function genTextCode(ast) {
   let index = 0
   let result = ''
   let str = ''
+  const tokens = []
   while (matched = defaultTagRE.exec(text)) {
     const name = matched[1]
     if (matched.index > index) {
      str = text.slice(index, matched.index)
-      result += `"${str}"`
+      // result += `"${str}"`
+      tokens.push(`"${str}"`)
     }
-    result += `_s(${name})`
+    // result +=
+    tokens.push(`_s(${name})`)
     index = defaultTagRE.lastIndex
   }
   if (index < text.length -  1)
-    result += `"${text.slice(index)}"`
-  return `_v(${result})`
+    tokens.push(`"${text.slice(index)}"`)
+    // result +=
+  return `_v(${tokens.join('+')})`
 }
 
 function gen(ast) {
@@ -177,7 +181,7 @@ export function compileToFunction(html) {
   console.log(ast)
   const code = gen(ast)
   console.log(code)
-
+  return new Function(`with(this){return ${code}}`)
 }
 
 

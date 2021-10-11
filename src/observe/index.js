@@ -1,9 +1,11 @@
 import arrayPrototype from "./array";
+import Dep from "./dep";
 
 
 
 class Observer {
   constructor(data) {
+    this.dep = new Dep()
     Object.defineProperty(data, '__ob__', {
       value: this,
       enumerable: false
@@ -27,16 +29,37 @@ class Observer {
   }
 }
 
+function dependArray(arr) {
+  arr.forEach(item => {
+   const ob = item.__ob__
+    if (ob) {
+      ob.dep.depend()
+    }
+    if (Array.isArray(item))
+      dependArray(item)
+  })
+}
+
 function defineReactive(data, key, value) {
-  observe(value)
+  const dep = new Dep()
+  let childOb = observe(value)
   Object.defineProperty(data, key, {
     get() {
+      if (Dep.target) {
+        dep.depend()
+        if (Array.isArray(value)) {
+            childOb.dep.depend()
+            dependArray(value)
+        }
+      }
+
       return value
     },
     set(newValue) {
       if (value !== newValue) {
-        observe(newValue)
+        childOb = observe(newValue)
         value = newValue
+        dep.notify()
       }
     }
   })
