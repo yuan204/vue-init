@@ -2,6 +2,7 @@ import {initState} from "./state";
 import {compileToFunction} from "./compiler/index";
 import {mountComponent} from "./lifecycle";
 import nextTick from "./utils/nextTick";
+import Watcher from "./observe/watcher";
 
 
 function initMixin(Vue) {
@@ -28,6 +29,15 @@ function initMixin(Vue) {
     }
     mountComponent(vm, el)
 
+  }
+
+  Vue.prototype.$watch = function (expOrFn, callback, options = {}) {
+    options.user = true
+    const vm = this
+    const watcher = new Watcher(vm, expOrFn, callback, options)
+    if (options.immediate) {
+      callback.call(vm, watcher.value)
+    }
   }
 
 }

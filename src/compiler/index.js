@@ -178,9 +178,9 @@ function gen(ast) {
 
 export function compileToFunction(html) {
   const ast = parseHtml(html)
-  console.log(ast)
+  // console.log(ast)
   const code = gen(ast)
-  console.log(code)
+  // console.log(code)
   return new Function(`with(this){return ${code}}`)
 }
 
