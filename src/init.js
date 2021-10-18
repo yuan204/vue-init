@@ -1,15 +1,18 @@
 import {initState} from "./state";
 import {compileToFunction} from "./compiler/index";
-import {mountComponent} from "./lifecycle";
+import {callHooks, mountComponent} from "./lifecycle";
 import nextTick from "./utils/nextTick";
-import Watcher from "./observe/watcher";
+import { mergeOptions } from "./GlobalApi/mixin";
 
 
 function initMixin(Vue) {
   Vue.prototype._init = function (options) {
     const vm = this
-    vm.$options = options
+    // vm.$options = options
+    vm.$options = mergeOptions(Vue.options,options)
+    callHooks(vm, 'beforeCreate')
     initState(this)
+    callHooks(vm, 'created')
 
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
@@ -29,15 +32,6 @@ function initMixin(Vue) {
     }
     mountComponent(vm, el)
 
-  }
-
-  Vue.prototype.$watch = function (expOrFn, callback, options = {}) {
-    options.user = true
-    const vm = this
-    const watcher = new Watcher(vm, expOrFn, callback, options)
-    if (options.immediate) {
-      callback.call(vm, watcher.value)
-    }
   }
 
 }
